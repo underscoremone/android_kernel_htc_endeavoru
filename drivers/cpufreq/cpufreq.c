@@ -507,7 +507,7 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 		if (ret){
 			continue;
 		}
-		printk(KERN_ERR "maxwen:setting govenor %s on cpu %d ok\n", str_governor, cpu);
+		//printk(KERN_ERR "maxwen:setting govenor %s on cpu %d ok\n", str_governor, cpu);
 	}
 #else 
 	ret = cpufreq_get_policy(&new_policy, policy->cpu);
@@ -1090,7 +1090,7 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 		policy->governor = CPUFREQ_DEFAULT_GOVERNOR;
 	}
 
-	printk(KERN_ERR "maxwen: set govener for cpu %d to %s\n", cpu, policy->governor->name);	
+	//printk(KERN_ERR "maxwen: set govener for cpu %d to %s\n", cpu, policy->governor->name);	
 	
 	/* call driver. From then on the cpufreq must be able
 	 * to accept all calls to ->verify and ->setpolicy for this CPU
