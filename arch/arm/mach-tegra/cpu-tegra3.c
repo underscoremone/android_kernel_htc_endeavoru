@@ -625,7 +625,7 @@ static noinline int tegra_cpu_speed_balance(void)
 	unsigned int nr_cpus = num_online_cpus();
 	unsigned int max_cpus = pm_qos_request(PM_QOS_MAX_ONLINE_CPUS) ? : 4;
 	unsigned int min_cpus = pm_qos_request(PM_QOS_MIN_ONLINE_CPUS);
-	unsigned int avg_nr_run = avg_nr_running();
+	unsigned int avg_nr_run;
 	unsigned int nr_run;
 
 	/* Evaluate:
