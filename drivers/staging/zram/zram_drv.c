@@ -36,7 +36,7 @@
 
 #include "zram_drv.h"
 
-#define ZRAM_COMPRESSOR_DEFAULT "lz4"
+#define ZRAM_COMPRESSOR_DEFAULT "lzo"
 
 /* Globals */
 static int zram_major;
