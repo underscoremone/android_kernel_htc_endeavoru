@@ -43,7 +43,7 @@
 #include <linux/frontswap.h>
 #endif
 
-#define ZCACHE_COMPRESSOR_DEFAULT "lz4"
+#define ZCACHE_COMPRESSOR_DEFAULT "lzo"
 
 #if 0
 /* this is more aggressive but may cause other problems? */

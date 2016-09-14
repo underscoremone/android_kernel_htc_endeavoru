@@ -261,7 +261,7 @@ struct key *key_alloc(struct key_type *type, const char *desc,
 	quotalen = desclen + type->def_datalen;
 
 	/* get hold of the key tracking for this user */
-	user = key_user_lookup(uid, cred->user->user_ns);
+	user = key_user_lookup(uid, cred->user_ns);
 	if (!user)
 		goto no_memory_1;
 
@@ -580,7 +580,7 @@ int key_reject_and_link(struct key *key,
 
 	mutex_unlock(&key_construction_mutex);
 
-	if (keyring)
+	if (keyring && link_ret == 0)
 		__key_link_end(keyring, key->type, prealloc);
 
 	/* wake up anyone waiting for a key to be constructed */
@@ -639,11 +639,11 @@ found_dead_key:
 	if (test_bit(KEY_FLAG_INSTANTIATED, &key->flags))
 		atomic_dec(&key->user->nikeys);
 
+	key_user_put(key->user);
+
 	/* now throw away the key memory */
 	if (key->type->destroy)
 		key->type->destroy(key);
-
-	key_user_put(key->user);
 
 	kfree(key->description);
 
@@ -742,6 +742,26 @@ struct key_type *key_type_lookup(const char *type)
 found_kernel_type:
 	return ktype;
 }
+
+void key_set_timeout(struct key *key, unsigned timeout)
+{
+	struct timespec now;
+	time_t expiry = 0;
+
+	/* make the changes with the locks held to prevent races */
+	down_write(&key->sem);
+
+	if (timeout > 0) {
+		now = current_kernel_time();
+		expiry = now.tv_sec + timeout;
+	}
+
+	key->expiry = expiry;
+	key_schedule_gc(key->expiry + key_gc_delay);
+
+	up_write(&key->sem);
+}
+EXPORT_SYMBOL_GPL(key_set_timeout);
 
 /*
  * Unlock a key type locked by key_type_lookup().
